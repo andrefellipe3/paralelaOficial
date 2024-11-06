@@ -7,7 +7,7 @@
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
-
+#define NUM_THREADS 1
 // Função para calcular a distância euclidiana entre dois pontos
 double euclidean_distance(double *a, double *b, int dimensions) {
     double distance = 0.0;
@@ -24,6 +24,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         int changes = 0;
 
         // Atribui cada ponto ao centróide mais próximo
+        omp_set_num_threads(NUM_THREADS);
         #pragma omp parallel for reduction(+:changes)
         for (int i = 0; i < NUM_POINTS; i++) {
             int nearest_centroid = 0;
@@ -46,12 +47,13 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         // Acumula os novos centróides em variáveis privadas
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
-
+        omp_set_num_threads(NUM_THREADS);
         #pragma omp parallel
         {
             double local_centroids[K][NUM_DIMENSIONS] = {0};
             int local_counts[K] = {0};
 
+            omp_set_num_threads(NUM_THREADS);
             #pragma omp for
             for (int i = 0; i < NUM_POINTS; i++) {
                 int cluster = labels[i];
@@ -60,7 +62,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
                     local_centroids[cluster][d] += points[i][d];
                 }
             }
-
+            omp_set_num_threads(NUM_THREADS);
             #pragma omp critical
             {
                 for (int j = 0; j < K; j++) {
