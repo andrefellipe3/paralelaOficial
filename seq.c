@@ -8,7 +8,6 @@
 #define K 5
 #define MAX_ITERATIONS 100
 
-// Função para calcular a distância euclidiana entre dois pontos
 double euclidean_distance(double *a, double *b, int dimensions) {
     double distance = 0.0;
     for (int i = 0; i < dimensions; i++) {
@@ -17,13 +16,11 @@ double euclidean_distance(double *a, double *b, int dimensions) {
     return sqrt(distance);
 }
 
-// Função para o algoritmo k-means na versão paralela otimizada
 void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_POINTS], double centroids[K][NUM_DIMENSIONS]) {
     int iterations = 0;
     while (iterations < MAX_ITERATIONS) {
         int changes = 0;
 
-        // Atribui cada ponto ao centróide mais próximo
         for (int i = 0; i < NUM_POINTS; i++) {
             int nearest_centroid = 0;
             double min_distance = euclidean_distance(points[i], centroids[0], NUM_DIMENSIONS);
@@ -42,7 +39,6 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
             }
         }
 
-        // Acumula os novos centróides em variáveis privadas
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
 
@@ -68,7 +64,6 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
             }
         }
 
-        // Atualiza centróides
         for (int j = 0; j < K; j++) {
             if (counts[j] > 0) {
                 for (int d = 0; d < NUM_DIMENSIONS; d++) {
@@ -90,26 +85,23 @@ int main() {
     int *labels = malloc(NUM_POINTS * sizeof(*labels));
     double centroids[K][NUM_DIMENSIONS];
 
-    // Lê os dados do arquivo CSV gerado em Python
     FILE *file = fopen("processed_data_diabetes.csv", "r");
     if (!file) {
         printf("Erro ao abrir o arquivo.\n");
         return 1;
     }
 
-    // Lê os dados e armazena em 'points'
     for (int i = 0; i < NUM_POINTS; i++) {
         for (int j = 0; j < NUM_DIMENSIONS; j++) {
             fscanf(file, "%lf,", &points[i][j]);
         }
-        labels[i] = 0; // Inicializa rótulos
+        labels[i] = 0;
     }
     fclose(file);
 
-    // Inicializa centróides com valores aleatórios
     for (int j = 0; j < K; j++) {
         for (int d = 0; d < NUM_DIMENSIONS; d++) {
-            centroids[j][d] = rand() % 100; // Valor aleatório
+            centroids[j][d] = rand() % 100; 
         }
     }
 
@@ -119,7 +111,6 @@ int main() {
 
     printf("Tempo de execução: %f segundos\n", end - start);
 
-    // Libera a memória
     free(points);
     free(labels);
 

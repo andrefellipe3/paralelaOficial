@@ -7,26 +7,28 @@
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
-#define NUM_THREADS 1 //AQUI VOCÊ MUDA O NUMERO DE THREADS
 
-double euclidean_distance(double *a, double *b, int dimensions) {
+double euclidean_distance(double *a, double *b, int dimensions) 
+{
     double distance = 0.0;
-    for (int i = 0; i < dimensions; i++) {
+    for (int i = 0; i < dimensions; i++) 
+    {
         distance += (a[i] - b[i]) * (a[i] - b[i]);
     }
     return sqrt(distance);
 }
 
-
-void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_POINTS], double centroids[K][NUM_DIMENSIONS]) {
+void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_POINTS], double centroids[K][NUM_DIMENSIONS]) 
+{
     int iterations = 0;
-    while (iterations < MAX_ITERATIONS) {
+    while (iterations < MAX_ITERATIONS) 
+    {
         int changes = 0;
-
-
-        omp_set_num_threads(NUM_THREADS);
-        #pragma omp parallel for reduction(+:changes)
-        for (int i = 0; i < NUM_POINTS; i++) {
+     
+     
+        for (int i = 0; i < NUM_POINTS; i++) 
+        for (int i = 0; i < NUM_POINTS; i++) 
+        {
             int nearest_centroid = 0;
             double min_distance = euclidean_distance(points[i], centroids[0], NUM_DIMENSIONS);
 
@@ -44,36 +46,34 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
             }
         }
 
-
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
-        omp_set_num_threads(NUM_THREADS);
-        #pragma omp parallel
-        {
+
+        
             double local_centroids[K][NUM_DIMENSIONS] = {0};
             int local_counts[K] = {0};
 
-            omp_set_num_threads(NUM_THREADS);
-            #pragma omp for
-            for (int i = 0; i < NUM_POINTS; i++) {
+            for (int i = 0; i < NUM_POINTS; i++) 
+            {
                 int cluster = labels[i];
                 local_counts[cluster]++;
-                for (int d = 0; d < NUM_DIMENSIONS; d++) {
+                for (int d = 0; d < NUM_DIMENSIONS; d++) 
+                {
                     local_centroids[cluster][d] += points[i][d];
                 }
             }
-            omp_set_num_threads(NUM_THREADS);
-            #pragma omp critical
-            {
-                for (int j = 0; j < K; j++) {
+
+           
+                for (int j = 0; j < K; j++)
+                 {
                     counts[j] += local_counts[j];
-                    for (int d = 0; d < NUM_DIMENSIONS; d++) {
+                    for (int d = 0; d < NUM_DIMENSIONS; d++) 
+                    {
                         new_centroids[j][d] += local_centroids[j][d];
                     }
                 }
-            }
-        }
-
+            
+        
 
         for (int j = 0; j < K; j++) {
             if (counts[j] > 0) {
@@ -102,15 +102,13 @@ int main() {
         return 1;
     }
 
-
     for (int i = 0; i < NUM_POINTS; i++) {
         for (int j = 0; j < NUM_DIMENSIONS; j++) {
             fscanf(file, "%lf,", &points[i][j]);
         }
-        labels[i] = 0; 
+        labels[i] = 0;
     }
     fclose(file);
-
 
     for (int j = 0; j < K; j++) {
         for (int d = 0; d < NUM_DIMENSIONS; d++) {
