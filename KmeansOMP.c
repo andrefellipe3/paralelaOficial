@@ -8,27 +8,20 @@
 #define K 5
 #define MAX_ITERATIONS 100
 
-double euclidean_distance(double *a, double *b, int dimensions) 
-{
+double euclidean_distance(double *a, double *b, int dimensions) {
     double distance = 0.0;
-    for (int i = 0; i < dimensions; i++) 
-    {
+    for (int i = 0; i < dimensions; i++) {
         distance += (a[i] - b[i]) * (a[i] - b[i]);
     }
     return sqrt(distance);
 }
 
-void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_POINTS], double centroids[K][NUM_DIMENSIONS]) 
-{
+void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_POINTS], double centroids[K][NUM_DIMENSIONS]) {
     int iterations = 0;
-    while (iterations < MAX_ITERATIONS) 
-    {
+    while (iterations < MAX_ITERATIONS) {
         int changes = 0;
-     
-     
-        for (int i = 0; i < NUM_POINTS; i++) 
-        for (int i = 0; i < NUM_POINTS; i++) 
-        {
+
+        for (int i = 0; i < NUM_POINTS; i++) {
             int nearest_centroid = 0;
             double min_distance = euclidean_distance(points[i], centroids[0], NUM_DIMENSIONS);
 
@@ -49,31 +42,27 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
 
-        
+        {
             double local_centroids[K][NUM_DIMENSIONS] = {0};
             int local_counts[K] = {0};
 
-            for (int i = 0; i < NUM_POINTS; i++) 
-            {
+            for (int i = 0; i < NUM_POINTS; i++) {
                 int cluster = labels[i];
                 local_counts[cluster]++;
-                for (int d = 0; d < NUM_DIMENSIONS; d++) 
-                {
+                for (int d = 0; d < NUM_DIMENSIONS; d++) {
                     local_centroids[cluster][d] += points[i][d];
                 }
             }
 
-           
-                for (int j = 0; j < K; j++)
-                 {
+            {
+                for (int j = 0; j < K; j++) {
                     counts[j] += local_counts[j];
-                    for (int d = 0; d < NUM_DIMENSIONS; d++) 
-                    {
+                    for (int d = 0; d < NUM_DIMENSIONS; d++) {
                         new_centroids[j][d] += local_centroids[j][d];
                     }
                 }
-            
-        
+            }
+        }
 
         for (int j = 0; j < K; j++) {
             if (counts[j] > 0) {
