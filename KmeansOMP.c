@@ -3,7 +3,7 @@
 #include <math.h>
 #include <omp.h>
 
-#define NUM_POINTS 50761  // Ajuste para o número total de pontos na base de dados
+#define NUM_POINTS 507361  // Ajuste para o número total de pontos na base de dados
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
