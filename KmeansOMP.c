@@ -20,10 +20,11 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
     int iterations = 0;
     while (iterations < MAX_ITERATIONS) {
         int changes = 0;
-        #pragma omp target teams distribute parallel for map(to: points[:NUM_POINTS][:NUM_DIMENSIONS], centroids[:K][:NUM_DIMENSIONS]) \
-        map(tofrom: labels[:NUM_POINTS]) reduction(+: changes)
+        
+        
+        #pragma omp target teams distribute parallel for map(to: points[:NUM_POINTS][:NUM_DIMENSIONS], centroids[:K][:NUM_DIMENSIONS])map(tofrom: labels[:NUM_POINTS]) reduction(+: changes)
         for (int i = 0; i < NUM_POINTS; i++) 
-        for (int i = 0; i < NUM_POINTS; i++) {
+        {
             int nearest_centroid = 0;
             double min_distance = euclidean_distance(points[i], centroids[0], NUM_DIMENSIONS);
 
