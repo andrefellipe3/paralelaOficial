@@ -22,7 +22,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         int changes = 0;
         
         
-       #pragma omp target teams distribute parallel for \
+       #pragma omp target teams num_teams(1) thread_limit(1) distribute parallel for \
         map(to: points[0:NUM_POINTS][0:NUM_DIMENSIONS], centroids[0:K][0:NUM_DIMENSIONS]) \
         map(tofrom: labels[0:NUM_POINTS]) \
         reduction(+: changes)
