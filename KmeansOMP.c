@@ -7,7 +7,7 @@
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
-#define NUM_THREADS 4 //AQUI VOCÊ MUDA O NUMERO DE THREADS
+#define NUM_THREADS 2 //AQUI VOCÊ MUDA O NUMERO DE THREADS
 #define NUM_TEAMS 2
 
 double euclidean_distance(double *a, double *b, int dimensions) {
