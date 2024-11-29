@@ -3,7 +3,7 @@
 #include <math.h>
 #include <omp.h>
 
-#define NUM_POINTS 507361  // Ajuste para o número total de pontos na base de dados
+#define NUM_POINTS 253681  // Ajuste para o número total de pontos na base de dados
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
@@ -51,10 +51,12 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
 
+         #pragma omp parallel
         {
             double local_centroids[K][NUM_DIMENSIONS] = {0};
             int local_counts[K] = {0};
 
+            #pragma omp for
             for (int i = 0; i < NUM_POINTS; i++) {
                 int cluster = labels[i];
                 local_counts[cluster]++;
@@ -63,6 +65,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
                 }
             }
 
+            #pragma omp critical
             {
                 for (int j = 0; j < K; j++) {
                     counts[j] += local_counts[j];
