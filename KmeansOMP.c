@@ -7,6 +7,8 @@
 #define NUM_DIMENSIONS 21   // Número de variáveis ou colunas numéricas
 #define K 5
 #define MAX_ITERATIONS 100
+#define NUM_THREADS 1 //AQUI VOCÊ MUDA O NUMERO DE THREADS
+#define NUM_TEAMS 1 
 
 double euclidean_distance(double *a, double *b, int dimensions) {
     double distance = 0.0;
@@ -22,7 +24,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         int changes = 0;
         
         
-       #pragma omp target teams num_teams(1) thread_limit(1) distribute parallel for \
+       #pragma omp target teams num_teams(NUM_TEAMS) thread_limit(NUM_THREADS) distribute parallel for \
         map(to: points[0:NUM_POINTS][0:NUM_DIMENSIONS], centroids[0:K][0:NUM_DIMENSIONS]) \
         map(tofrom: labels[0:NUM_POINTS]) \
         reduction(+: changes)
@@ -51,11 +53,13 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
         double new_centroids[K][NUM_DIMENSIONS] = {0};
         int counts[K] = {0};
 
+        omp_set_num_threads(NUM_THREADS);
          #pragma omp parallel
         {
             double local_centroids[K][NUM_DIMENSIONS] = {0};
             int local_counts[K] = {0};
 
+            omp_set_num_threads(NUM_THREADS);
             #pragma omp for
             for (int i = 0; i < NUM_POINTS; i++) {
                 int cluster = labels[i];
@@ -65,6 +69,7 @@ void kmeans_parallel(double points[NUM_POINTS][NUM_DIMENSIONS], int labels[NUM_P
                 }
             }
 
+            omp_set_num_threads(NUM_THREADS);
             #pragma omp critical
             {
                 for (int j = 0; j < K; j++) {
