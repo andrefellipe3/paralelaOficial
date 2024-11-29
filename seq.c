@@ -104,11 +104,8 @@ int main() {
         }
     }
 
-    double start = omp_get_wtime();
-    kmeans_parallel(points, labels, centroids);
-    double end = omp_get_wtime();
 
-    printf("Tempo de execução: %f segundos\n", end - start);
+    kmeans_parallel(points, labels, centroids);
 
     free(points);
     free(labels);
