@@ -8,7 +8,7 @@
 #define K 5
 #define MAX_ITERATIONS 100
 #define NUM_THREADS 1 //AQUI VOCÊ MUDA O NUMERO DE THREADS
-#define NUM_TEAMS 1 
+#define NUM_TEAMS 2 
 
 double euclidean_distance(double *a, double *b, int dimensions) {
     double distance = 0.0;
